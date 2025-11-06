@@ -27,18 +27,25 @@ subset_data <- pmap(
       filter(str_detect(CODE, "^I[0-9][0-9]") | str_detect(CODE, "^D[0-9]")) |>
       mutate(across(starts_with("19"), as.numeric)) |>
       pivot_longer(cols = starts_with("19"), names_to = "YEAR") |>
-      rename(!!y := value) |>
-      mutate(YEAR_num = as.numeric(YEAR))
+      mutate(YEAR_num = as.numeric(YEAR)) |>
+      select(NUTS, CODE, REGIONS, YEAR, YEAR_num, value)
   }
 )
 rm(all_data)
 
-# Checking for NA's
+# Checking for NA's and stopping in case
 NA_vals <- map_dbl(
   subset_data,
   ~ {
-    sum(is.na(.x[[5]]))
+    sum(is.na(.x$value))
   }
 )
+if (any(NA_vals != 0)) {
+  NA_vals2 <- NA_vals[NA_vals != 0]
+  stop(
+    "NA Values found in ",
+    paste0(names(NA_vals2), collapse = ", ")
+  )
+}
 
 # Merging
