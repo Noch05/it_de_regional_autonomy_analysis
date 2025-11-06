@@ -52,13 +52,21 @@ subset_data <- map2(subset_data, names(subset_data), \(x, y) {
   rename(x, !!y := value)
 })
 
-# Merging and cleaning column names
+# Merging and adding new variables
 df <- reduce(
   subset_data,
   full_join,
   by = c("NUTS", "CODE", "REGIONS", "YEAR", "YEAR_num")
-)
+) |>
+  mutate("")
 
 names(df) <- str_replace_all(names(df), "\\s", "_") |> tolower()
 
 write_csv(df, here("data/it_de_regional_data_cleaned.csv"))
+
+# nuts is EU NUTS code
+# code is the code used in the dataset for each region
+# region is the name of the region/lander
+# year is the year as a string
+# year_num is the val as a double
+# All the other variables are detailed above
