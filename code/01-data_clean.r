@@ -47,5 +47,18 @@ if (any(NA_vals != 0)) {
     paste0(names(NA_vals2), collapse = ", ")
   )
 }
+rm(NA_vals)
+subset_data <- map2(subset_data, names(subset_data), \(x, y) {
+  rename(x, !!y := value)
+})
 
-# Merging
+# Merging and cleaning column names
+df <- reduce(
+  subset_data,
+  full_join,
+  by = c("NUTS", "CODE", "REGIONS", "YEAR", "YEAR_num")
+)
+
+names(df) <- str_replace_all(names(df), "\\s", "_") |> tolower()
+
+write_csv(df, here("data/it_de_regional_data_cleaned.csv"))
