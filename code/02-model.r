@@ -54,7 +54,8 @@ gdp_tex <- texreg(
   dcolumn = TRUE,
   caption = "GDP Growth Rate Models",
   label = "",
-  caption.above = TRUE
+  caption.above = TRUE,
+  sideways = TRUE
 )
 
 texreg(
@@ -83,5 +84,6 @@ texreg(
   dcolumn = TRUE,
   caption = "GDP Per Capita Models",
   label = "",
-  caption.above = TRUE
+  caption.above = TRUE,
+  sideways = TRUE
 )
