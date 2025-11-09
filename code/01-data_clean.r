@@ -24,7 +24,7 @@ subset_data <- pmap(
   list(all_data, sheet_idx),
   function(x, y) {
     x |>
-      filter(str_detect(CODE, "^I[0-9][0-9]") | str_detect(CODE, "^D[0-9]")) |>
+      filter(str_detect(CODE, "^I\\d{1,2}") | str_detect(CODE, "^D\\d{1,2}")) |>
       mutate(across(starts_with("19"), as.numeric)) |>
       pivot_longer(cols = starts_with("19"), names_to = "YEAR") |>
       mutate(YEAR_num = as.numeric(YEAR)) |>
@@ -57,12 +57,9 @@ df <- reduce(
   subset_data,
   full_join,
   by = c("NUTS", "CODE", "REGIONS", "YEAR", "YEAR_num")
-) |>
-  mutate("")
-
+)
 names(df) <- str_replace_all(names(df), "\\s", "_") |> tolower()
 
-write_csv(df, here("data/it_de_regional_data_cleaned.csv"))
 
 # nuts is EU NUTS code
 # code is the code used in the dataset for each region
@@ -70,3 +67,48 @@ write_csv(df, here("data/it_de_regional_data_cleaned.csv"))
 # year is the year as a string
 # year_num is the val as a double
 # All the other variables are detailed above
+
+#-------------------------------------------------
+# Adding and Modifying Variables
+
+# Keeping Italian NUTS1 Regions Nord-est and Nord-Ovest
+italian_keep <- c(
+  "valle d'aosta",
+  "liguria",
+  "piemonte",
+  "veneto",
+  "emilia-romagna",
+  "lombardia",
+  "trentino-alto adige",
+  "friuli-venezia giula"
+)
+
+# Keeping most comparable German Regions, by geographical proximity, and economic similarity
+germany_keep <- c(
+  "bande-wuerttemberg",
+  "bayern",
+  "hessen",
+  "nordhein-westfalen"
+)
+
+
+# Reverting the Scaling, populations were dived by 1000, gdp by 1000000
+df <- df |>
+  mutate(
+    across(c(pop, occ_agr, occ_ind, occ_ser, occ_tot), \(x) x * 1e4),
+    gdp = gdp * 1e6,
+    regions = tolower(regions)
+  ) |>
+  filter(regions %in% c(italian_keep, germany_keep)) |>
+  mutate(
+    gov_type = case_when(
+      regions %in% germany_keep ~ "federal",
+      regions %in% italian_keep[7:8] ~ "special statute",
+      TRUE ~ "ordinary"
+    ),
+    federal = if_else(gov_type == "federal", TRUE, FALSE),
+    across(starts_with("occ"), \(x) x / pop) # Rescaling to proportions
+  )
+
+
+write_csv(df, here("data/it_de_regional_data_cleaned.csv"))
