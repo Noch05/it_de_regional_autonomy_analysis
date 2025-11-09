@@ -85,10 +85,10 @@ italian_keep <- c(
 
 # Keeping most comparable German Regions, by geographical proximity, and economic similarity
 germany_keep <- c(
-  "bande-wuerttemberg",
+  "baden-wuerttemberg",
   "bayern",
   "hessen",
-  "nordhein-westfalen"
+  "nordrhein-westfalen"
 )
 
 
@@ -107,7 +107,8 @@ df <- df |>
       TRUE ~ "ordinary"
     ),
     federal = if_else(gov_type == "federal", TRUE, FALSE),
-    across(starts_with("occ"), \(x) x / pop) # Rescaling to proportions
+    across(starts_with("occ"), \(x) x / pop), # Rescaling to proportions
+    years_since = year_num - min(year_num) # Years since first year, better scaling
   )
 
 
