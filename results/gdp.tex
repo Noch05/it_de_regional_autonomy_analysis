@@ -1,30 +1,33 @@
 
+\usepackage{booktabs}
+\usepackage{dcolumn}
+
 \begin{table}
+\caption{GDP Growth Rate Models}
 \begin{center}
-\begin{tabular}{l c c c}
-\hline
- & \multicolumn{3}{c}{GDP Growth Rates} \\
-\cline{2-4}
- & Simple & Region FE & Region and Year FE \\
-\hline
-Federal                                   & $1.61479$   & $4.35162$   & $0.75565$   \\
-                                          & $(0.13018)$ & $(0.01584)$ & $(0.02328)$ \\
-Years Since 1977                          &             & $0.01187$   &             \\
-                                          &             & $(0.00084)$ &             \\
-Agricultural Workforce (\% of Population) &             &             & $-0.55571$  \\
-                                          &             &             & $(0.79592)$ \\
-Service Workforce (\% of Population)      &             &             & $1.83272$   \\
-                                          &             &             & $(0.39513)$ \\
-Industrial Workforce (\% of Population)   &             &             & $1.82441$   \\
-                                          &             &             & $(0.31593)$ \\
-\hline
-R$^2$                                     & $0.33804$   & $0.99856$   & $0.99959$   \\
-Adj. R$^2$                                & $0.33446$   & $0.99846$   & $0.99952$   \\
-Statistic                                 & $153.86360$ & $$          & $$          \\
-P Value                                   & $0.00000$   & $$          & $$          \\
-DF Resid.                                 & $185.00000$ & $175.00000$ & $157.00000$ \\
-nobs                                      & $187$       & $187$       & $187$       \\
-\hline
+\begin{tabular}{l D{.}{.}{3.6} D{.}{.}{3.6} D{.}{.}{3.6}}
+\toprule
+ & \multicolumn{1}{c}{Simple} & \multicolumn{1}{c}{Region FE} & \multicolumn{1}{c}{Region and Year FE} \\
+\midrule
+Federal                                   & 1.61479   & 4.35162   & 0.75565   \\
+                                          & (0.13018) & (0.01584) & (0.02328) \\
+Years Since 1977                          &           & 0.01187   &           \\
+                                          &           & (0.00084) &           \\
+Agricultural Workforce (\% of Population) &           &           & -0.55571  \\
+                                          &           &           & (0.79592) \\
+Service Workforce (\% of Population)      &           &           & 1.83272   \\
+                                          &           &           & (0.39513) \\
+Industrial Workforce (\% of Population)   &           &           & 1.82441   \\
+                                          &           &           & (0.31593) \\
+\midrule
+R$^2$                                     & 0.33804   & 0.99856   & 0.99959   \\
+Adj. R$^2$                                & 0.33446   & 0.99846   & 0.99952   \\
+Statistic                                 & 153.86360 &           &           \\
+P Value                                   & 0.00000   &           &           \\
+DF Resid.                                 & 185.00000 & 175.00000 & 157.00000 \\
+nobs                                      & 187       & 187       & 187       \\
+\bottomrule
 \end{tabular}
+\label{}
 \end{center}
 \end{table}
