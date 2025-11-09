@@ -101,10 +101,13 @@ df <- df |>
   ) |>
   filter(regions %in% c(italian_keep, germany_keep)) |>
   mutate(
-    gov_type = case_when(
-      regions %in% germany_keep ~ "federal",
-      regions %in% italian_keep[7:8] ~ "special statute",
-      TRUE ~ "ordinary"
+    gov_type = factor(
+      case_when(
+        regions %in% germany_keep ~ "federal",
+        regions %in% italian_keep[7:8] ~ "special statute",
+        TRUE ~ "ordinary"
+      ),
+      levels = c("ordinary", "special statute", "federal")
     ),
     federal = if_else(gov_type == "federal", TRUE, FALSE),
     across(starts_with("occ"), \(x) x / pop), # Rescaling to proportions
@@ -112,4 +115,4 @@ df <- df |>
   )
 
 
-write_csv(df, here("data/it_de_regional_data_cleaned.csv"))
+write_rds(df, here("data/it_de_regional_data_cleaned.rds"))
