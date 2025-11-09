@@ -116,3 +116,4 @@ df <- df |>
 
 
 write_rds(df, here("data/it_de_regional_data_cleaned.rds"))
+write_csv(df, here("data/it_de_regional_data_cleaned.csv"))
