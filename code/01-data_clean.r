@@ -118,8 +118,9 @@ df <- df |>
     across(starts_with("occ"), \(x) x / pop),
     years_since = year_num - min(year_num),
     federal = if_else(gov_type == "federal", 1, 0)
-  )
-
+  ) |>
+  filter(regions != "abruzzi")
+# Removing redundancy here abruzzi and abruzzo are one place
 
 write_rds(df, here("data/it_de_regional_data_cleaned.rds"))
 write_csv(df, here("data/it_de_regional_data_cleaned.csv"))
