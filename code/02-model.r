@@ -1,5 +1,6 @@
-library(estimatr)
+library(fixest)
 library(here)
+library(plm)
 library(tidymodels)
 library(tidyverse)
 library(texreg)
@@ -8,22 +9,25 @@ library(stargazer)
 df <- read_rds(here("data/it_de_regional_data_cleaned.rds"))
 # GDP Models
 gdp_mod <- list(
-  lm1 <- lm_robust(I(log(gdp)) ~ federal, data = df),
-  lm2 <- lm_robust(I(log(gdp)) ~ federal + regions + years_since, data = df),
-  lm3 <- lm_robust(
-    I(log(gdp)) ~ federal + regions + year + occ_agr + occ_ser + occ_ind,
+  lm1 = feols(log(gdp) ~ gov_type, data = df, ),
+  lm2 = feols(
+    log(gdp) ~ gov_type + years_since | regions,
+    data = df
+  ),
+  lm3 = feols(
+    log(gdp) ~ gov_type + occ_agr + occ_ser + occ_ind | regions + year,
     data = df
   )
 )
 
 # GDP per Capita Models
 gdp_pc_mod <- list(
-  lm_p1 <- lm_robust(I(log(gdp_pc)) ~ federal, data = df),
-  lm_p2 <- lm_robust(
+  lm_p1 <- feols(I(log(gdp_pc)) ~ federal, data = df),
+  lm_p2 <- feols(
     I(log(gdp_pc)) ~ federal + regions + years_since,
     data = df
   ),
-  lm_p3 <- lm_robust(
+  lm_p3 <- feols(
     I(log(gdp_pc)) ~ federal +
       regions +
       year +
@@ -32,7 +36,7 @@ gdp_pc_mod <- list(
       occ_ind,
     data = df
   ),
-  lm_p4 <- lm_robust(
+  lm_p4 <- feols(
     gdp_pc ~ federal + regions + year + occ_agr + occ_ser + occ_ind,
     data = df
   )
@@ -131,3 +135,19 @@ stargazer(
   out = "results/percent_change.tex",
   float = TRUE
 )
+
+
+# Full fixed effects model (no gov_type, controls for time + region)
+fe_full <- feols(
+  log(gdp) ~ occ_agr + occ_ind + occ_ser | regions + year,
+  data = df
+)
+
+# Between-region model (average GDP vs gov_type)
+region_means <- df %>%
+  group_by(regions, gov_type) %>%
+  summarise(mean_gdp = mean(log(gdp)), .groups = "drop")
+
+between_mod <- lm(mean_gdp ~ gov_type, data = region_means)
+
+etable(fe_full, between_mod)
