@@ -71,24 +71,46 @@ names(df) <- str_replace_all(names(df), "\\s", "_") |> tolower()
 #-------------------------------------------------
 # Adding and Modifying Variables
 
+# Keeping Italian NUTS1 Regions Nord-est and Nord-Ovest
+# and most comparable german regions by economics and proximity
+
+italy_keep <- c(
+  "piemonte",
+  "valle d'aosta",
+  "liguria",
+  "lombardia",
+  "trentino-alto adige",
+  "veneto",
+  "friuli-venezia giulia",
+  "emilia-romagna"
+)
+germany_keep <- c(
+  "baden-wuerttemberg",
+  "bayern",
+  "hessen",
+  "nordrhein-westfalen"
+)
+
 # Reverting the Scaling, populations were dived by 1000, gdp by 1000000
 # Occ variables no as percentages
 # Creating New Variables to capture government type
+
 df <- df |>
   mutate(
     across(c(pop, occ_agr, occ_ind, occ_ser, occ_tot), \(x) x * 1e4),
     gdp = gdp * 1e6,
-    regions = tolower(regions),
+    regions = tolower(regions)
+  ) |>
+  filter(regions %in% c(italy_keep, germany_keep)) |>
+  mutate(
     gov_type = factor(
       case_when(
         str_detect(code, "^D") ~ "federal",
         regions %in%
           c(
             "valle d'aosta",
-            "trentino-alto adige",
-            "friuli-venezia giula",
-            "sardegna",
-            "sicilia"
+            "friuli-venezia giulia",
+            "trentino-alto adige"
           ) ~ "special statute",
         TRUE ~ "ordinary"
       ),
@@ -97,9 +119,8 @@ df <- df |>
     across(starts_with("occ"), \(x) x / pop),
     years_since = year_num - min(year_num),
     federal = if_else(gov_type == "federal", 1, 0)
-  ) |>
-  filter(regions != "abruzzi")
-# Removing redundancy here abruzzi and abruzzo are one place
+  )
+
 
 write_rds(df, here("data/it_de_regional_data_cleaned.rds"))
 write_csv(df, here("data/it_de_regional_data_cleaned.csv"))
