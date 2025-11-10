@@ -10,7 +10,7 @@ df <- read_rds(here("data/it_de_regional_data_cleaned.rds")) |>
     country = if_else(federal == 1, "German", "Italian"),
     gdp_divide = gdp / 1e9
   )
-
+#-------------------------------------------
 # Graphing GDP over time per region
 df |>
   ggplot(aes(x = year_num, y = gdp_divide, color = regions, shape = country)) +
@@ -31,8 +31,9 @@ df |>
     legend.title = element_text(face = "bold"),
     panel.grid.minor = element_blank()
   )
-ggsave(here("results/gdp_plot.png"))
-
+ggsave(here("out/gdp_plot.png"))
+#-------------------------------------------
+# Graphing GDP per capita over time per region
 df |>
   ggplot(aes(x = year_num, y = gdp_pc, color = regions, shape = country)) +
   geom_jitter(size = 2, alpha = 0.8, width = 0.3, height = 0) +
@@ -53,10 +54,10 @@ df |>
     legend.title = element_text(face = "bold"),
     panel.grid.minor = element_blank()
   )
-ggsave(here("results/gdp_pc_plot.png"))
+ggsave(here("out/gdp_pc_plot.png"))
 
+#-------------------------------------------
 
-# Graphing GDP per capita over time per region
 # GDP Models
 gdp_models <- list(
   simple = plm(
