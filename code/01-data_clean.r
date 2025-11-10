@@ -93,25 +93,31 @@ germany_keep <- c(
 
 
 # Reverting the Scaling, populations were dived by 1000, gdp by 1000000
+# Occ variables no as percentages
+# Creating New Variables to capture government type
 df <- df |>
   mutate(
     across(c(pop, occ_agr, occ_ind, occ_ser, occ_tot), \(x) x * 1e4),
     gdp = gdp * 1e6,
-    regions = tolower(regions)
-  ) |>
-  filter(regions %in% c(italian_keep, germany_keep)) |>
-  mutate(
+    regions = tolower(regions),
     gov_type = factor(
       case_when(
-        regions %in% germany_keep ~ "federal",
-        regions %in% italian_keep[7:8] ~ "special statute",
+        str_detect(code, "^D") ~ "federal",
+        regions %in%
+          c(
+            "valle d'aosta",
+            "trentino-alto adige",
+            "friuli-venezia giula",
+            "sardegna",
+            "sicilia"
+          ) ~ "special statute",
         TRUE ~ "ordinary"
       ),
       levels = c("ordinary", "special statute", "federal")
     ),
-    federal = if_else(gov_type == "federal", TRUE, FALSE),
-    across(starts_with("occ"), \(x) x / pop), # Rescaling to proportions
-    years_since = year_num - min(year_num) # Years since first year, better scaling
+    across(starts_with("occ"), \(x) x / pop),
+    years_since = year_num - min(year_num),
+    federal = if_else(gov_type == "federal", 1, 0)
   )
 
 
