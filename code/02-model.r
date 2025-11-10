@@ -28,14 +28,14 @@ pdf <- pdata.frame(df, index = c("regions", "year")) |>
 # GDP Models
 gdp_models <- list(
   simple = plm(I(log(gdp)) ~ gov_type, model = "pooling", data = pdf),
-  lin = plm(
-    I(log(gdp)) ~ gov_type + years_since,
+  growth = plm(
+    I(log(gdp)) ~ gov_type + years_since + years_since * gov_type,
     effect = "individual",
     model = "random",
     data = pdf
   ),
-  full = plm(
-    I(log(gdp)) ~ gov_type + year + occ_ind + occ_agr + occ_ser,
+  mixed = plm(
+    I(log(gdp)) ~ gov_type + year + pop + occ_ind + occ_agr + occ_ser,
     effect = "individual",
     model = "random",
     data = pdf
@@ -45,20 +45,20 @@ gdp_models <- list(
 # GDP Per Capita Models
 gdp_pc_models <- list(
   simple = plm(I(log(gdp_pc)) ~ gov_type, model = "pooling", data = pdf),
-  lin = plm(
-    I(log(gdp_pc)) ~ gov_type + years_since,
-    effect = "individual",
-    model = "random",
-    data = pdf
-  ),
-  full = plm(
-    I(log(gdp_pc)) ~ gov_type + year + occ_ind + occ_agr + occ_ser,
-    effect = "individual",
-    model = "random",
-    data = pdf
-  ),
-  nominal = plm(
+  nominal_mixed = plm(
     gdp_pc ~ gov_type + year + occ_ind + occ_agr + occ_ser,
+    effect = "individual",
+    model = "random",
+    data = pdf
+  ),
+  growth = plm(
+    I(log(gdp_pc)) ~ gov_type + years_since + years_since * gov_type,
+    effect = "individual",
+    model = "random",
+    data = pdf
+  ),
+  nominal_growth = plm(
+    gdp_pc ~ gov_type + years_since + years_since * gov_type,
     effect = "individual",
     model = "random",
     data = pdf
