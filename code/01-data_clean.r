@@ -2,7 +2,7 @@ library(tidyverse)
 library(readxl)
 library(here)
 
-# Reading in Data
+# Reading data
 
 sheet_idx <- c(
   "POP", # Population / 1000

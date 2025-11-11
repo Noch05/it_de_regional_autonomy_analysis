@@ -64,3 +64,10 @@ gdp_pc_models <- list(
     data = pdf
   )
 )
+
+## Determine Residual Structure
+
+all_models <- c(gdp_models, gdp_pc_models)
+
+## Extracting Standard Errors Use vcovDC, and choose between HC1 and HC3, likely 3.
+## Calculating
