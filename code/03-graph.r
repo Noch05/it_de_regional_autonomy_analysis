@@ -27,7 +27,7 @@ df |>
     legend.title = element_text(face = "bold"),
     panel.grid.minor = element_blank()
   )
-ggsave(here("out/gdp_plot.png"))
+ggsave(here("plots/gdp_plot.png"))
 #-------------------------------------------
 # Graphing GDP per capita over time per region
 df |>
@@ -50,4 +50,4 @@ df |>
     legend.title = element_text(face = "bold"),
     panel.grid.minor = element_blank()
   )
-ggsave(here("out/gdp_pc_plot.png"))
+ggsave(here("plots/gdp_pc_plot.png"))
