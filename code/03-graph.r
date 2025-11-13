@@ -1,6 +1,7 @@
 library(tidyverse)
 library(here)
 library(gridExtra)
+library(fixest)
 
 df <- read_rds(here("data/it_de_regional_data_cleaned.rds")) |>
   mutate(
@@ -57,30 +58,28 @@ ggsave(here("plots/gdp_pc_plot.png"))
 
 all_models <- read_rds("models/full_models.rds")
 
-residual_plots <- map2(all_models, names(all_models), \(x, n) {
-  df <- tibble(
-    residuals = residuals(x),
-    fitted = fitted(x),
-    time = as.numeric(str_extract(names(residuals(x)), "\\d\\d\\d\\d"))
-  )
+residual_plots <- map(all_models, \(x) {
+  df <- df |>
+    mutate(fitted = predict(x, df), residuals = eval(x$fml[[2]]) - fitted)
+
   list(
     ggplot(df, aes(x = fitted, y = residuals)) +
       geom_point() +
       geom_hline(yintercept = 0, color = "blue", linetype = 2) +
       theme_minimal() +
-      labs(title = paste(n, "fitted")),
+      labs(title = "fitted"),
 
-    ggplot(df, aes(x = time, y = residuals)) +
+    ggplot(df, aes(x = year_num, y = residuals)) +
       geom_point() +
       theme_minimal() +
-      labs(title = paste(n, "time"))
+      labs(title = "time")
   )
 }) |>
   unlist()
 
 ggsave(
   filename = "plots/residual_plots.pdf",
-  plot = marrangeGrob(residual_plots, nrow = 4, ncol = 4),
+  plot = marrangeGrob(residual_plots, nrow = 3, ncol = 3),
   width = 16,
   height = 9
 )
