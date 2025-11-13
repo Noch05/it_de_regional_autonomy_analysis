@@ -45,9 +45,14 @@ models <- list(
   )
 ) |>
   map(\(x) {
-    summary(x, vcov = twoway(x))
+    model <- summary(x, vcov = twoway(x))
+    model$cov.iid <- NULL
+    model$cov.unscaled <- NULL
+    # Removing original vcov matrices
+    return(model)
   })
 write_rds(models, "models/full_models.rds")
+
 # 1st Growth Model drop sectoral controls, the change in sectoral composition
 # may be apart of the benefit to regional autonomy, via economic policy, plans etc.
 #---------------------------------------------

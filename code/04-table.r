@@ -1,49 +1,35 @@
 library(here)
 library(tidyverse)
+library(fixest)
 library(kableExtra)
-library(modelsummary)
 
 # Reading in
 options(scipen = 999)
 df <- read_rds(here("data/it_de_regional_data_cleaned.rds"))
 models <- read_rds(here("models/full_models.rds"))
-se <- read_rds(here("models/model_se.rds"))
-names(se) <- NULL
 
-# Redoing each as OLS to get summary structure for table
-# Replacing each coefficient with the vector from `se`
-
-fe_row <- tribble(
-  ~term                  , ~simple  , ~fixed   , ~fixed_full , ~simple_pc , ~fixed_pc , ~fixed_full_pc ,
-  "Region Fixed Effects" , ""       , "\u2713" , "\u2713"    , ""         , "\u2713"  , "\u2713"       ,
-  "Time Fixed Effects"   , "\u2713" , ""       , ""          , "\u2713"   , ""        , ""
-)
-
-model_table <- modelsummary(
-  se,
-  coef_rename = c(
-    "Special Statute",
-    "Federal",
-    "Year",
-    "Year * Special Statute",
-    "Year * Federal",
-    "Agriculture (%)",
-    "Industry (%)",
-    "Service (%)",
-    "Log(Population)"
+model_table <- etable(
+  models,
+  digits = 5,
+  se.below = TRUE,
+  dict = c(
+    `I(log(gdp))` = "log(GDP)",
+    `I(log(gdp_pc))` = "log(GDP Per Capita)$",
+    `gov_typespecialstatute` = "Special Statute Region",
+    `gov_typefederal` = "Federal Länder",
+    `years_since` = "Years Since 1977",
+    `occ_agr` = "Agricultural (%)",
+    `occ_ind` = "Industrial (%)",
+    `occ_ser` = "Service (%)",
+    `year` = "Year",
+    `regions` = "Region/Länder"
   ),
-  add_rows = fe_row,
-  gof_omit = "IC",
-  stars = c("*" = 0.05),
-  fmt = 5,
-  output = "kableExtra",
-  escape = FALSE,
-  names = NULL
-) |>
-  add_header_above(
-    c(" " = 1, "GDP" = 3, "GDP Per Capita" = 3)
-  )
-save_kable(model_table, "tables/model_table.png")
+  headers = list("GDP Models" = 3, "GDP Per Capita Models" = 3),
+  tex = TRUE,
+  export = "tables/model_table.png",
+  signif.code = c("*" = 0.05),
+  convergence = TRUE
+)
 
 
 # Summary Statistic Table
@@ -79,14 +65,10 @@ df2 <- df |>
     `Population (Millions)` = pop
   )
 
-kable(
+etable(
   df2,
-  format = "html",
-  table.attr = 'class="table table-striped table-hover"'
-) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-    full_width = FALSE,
-    position = "center"
-  ) %>%
-  save_kable("tables/summary.png")
+  dict = dict,
+  digits = 2,
+  tex = TRUE,
+  file = "tables/summary_table.png"
+)
