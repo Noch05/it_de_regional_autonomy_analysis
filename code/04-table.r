@@ -28,7 +28,12 @@ model_table <- etable(
   tex = TRUE,
   export = "tables/model_table.png",
   signif.code = c("*" = 0.05),
-  convergence = TRUE
+  notes = c(
+    "* p\\textless0.05",
+    "Standard errors in parentheses",
+    "Clustered by time and region"
+  ),
+  style.tex = style.tex(main = "aer")
 )
 
 
