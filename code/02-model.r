@@ -1,4 +1,5 @@
 library(here)
+library(lmtest)
 library(plm)
 library(tidyverse)
 
@@ -7,8 +8,9 @@ df <- read_rds(here("data/it_de_regional_data_cleaned.rds"))
 
 #-------------------------------------------
 # Region is entity, Year is time
-pdf <- pdata.frame(df, index = c("regions", "year")) |>
+pdf <- df |>
   select(
+    regions,
     year,
     years_since,
     gov_type,
@@ -19,7 +21,8 @@ pdf <- pdata.frame(df, index = c("regions", "year")) |>
     occ_agr,
     occ_ind,
     occ_ser
-  )
+  ) |>
+  pdata.frame(index = c("regions", "year"))
 
 # effect = "twoways" is both, effect = "individual" is region,
 # effect = "time" is year
@@ -28,8 +31,13 @@ pdf <- pdata.frame(df, index = c("regions", "year")) |>
 # GDP Models
 gdp_models <- list(
   simple = plm(I(log(gdp)) ~ gov_type, model = "pooling", data = pdf),
-  mixed = plm(
-    I(log(gdp)) ~ gov_type + year + pop + occ_ind + occ_agr + occ_ser,
+  fixed = plm(
+    I(log(gdp)) ~ gov_type +
+      year +
+      I(log(pop)) +
+      I(log(occ_ind)) +
+      I(log(occ_agr)) +
+      I(log(occ_ser)),
     effect = "individual",
     model = "random",
     data = pdf
@@ -47,7 +55,7 @@ gdp_models <- list(
 # GDP Per Capita Models
 gdp_pc_models <- list(
   simple_pc = plm(I(log(gdp_pc)) ~ gov_type, model = "pooling", data = pdf),
-  nominal_mixed_pc = plm(
+  nominal_fixed_pc = plm(
     gdp_pc ~ gov_type + year + occ_ind + occ_agr + occ_ser,
     effect = "individual",
     model = "random",
@@ -76,22 +84,6 @@ gdp_pc_models <- list(
 
 all_models <- c(gdp_models, gdp_pc_models)
 
-walk2(all_models, names(all_models), \(x, y) {
-  df <- tibble(
-    residuals = residuals(x),
-    fitted = fitted(x),
-    time = as.numeric(str_extract(names(residuals(x)), "\\d\\d\\d\\d"))
-  )
-  ggplot(df, aes(x = fitted, y = residuals)) +
-    geom_point() +
-    geom_hline(yintercept = 0, color = "blue", linetype = 2) +
-    theme_minimal()
-  ggsave(paste0("plots/", y, "_fit_resid_plot.png"))
-  ggplot(df, aes(x = time, y = residuals)) +
-    geom_point() +
-    theme_minimal()
-  ggsave(paste0("plots/", y, "_time_resid_plot.png"))
-})
 
 ## Heteroskedastic and clearly clustered
 
@@ -99,9 +91,14 @@ walk2(all_models, names(all_models), \(x, y) {
 standard_errors <- map(all_models, \(x) {
   tryCatch(
     {
-      summary(x, vcovDC(x, "HC1"))
+      r <- vcovDC(x, "HC1")
+      coeftest(x, vcov. = r)
     },
-    error = \(e) NA
+    error = \(e) {
+      print(e)
+      stop()
+    }
   )
 })
-write_rds(standard_errors, "models/model_summaries.rds")
+write_rds(standard_errors, "models/model_se.rds")
+write_rds(all_models, "models/full_models.rds")
