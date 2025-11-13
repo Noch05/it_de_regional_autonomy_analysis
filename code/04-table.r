@@ -14,7 +14,7 @@ model_table <- etable(
   se.below = TRUE,
   dict = c(
     `I(log(gdp))` = "log(GDP)",
-    `I(log(gdp_pc))` = "log(GDP Per Capita)$",
+    `I(log(gdp_pc))` = "log(GDP Per Capita)",
     `gov_typespecialstatute` = "Special Statute Region",
     `gov_typefederal` = "Federal Länder",
     `years_since` = "Years Since 1977",
@@ -65,10 +65,14 @@ df2 <- df |>
     `Population (Millions)` = pop
   )
 
-etable(
+kable(
   df2,
-  dict = dict,
-  digits = 2,
-  tex = TRUE,
-  file = "tables/summary_table.png"
-)
+  format = "html",
+  table.attr = 'class="table table-striped table-hover"'
+) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
+  save_kable("tables/summary.png")
