@@ -48,7 +48,8 @@ gdp_models <- list(
       gov_type:years_since +
       occ_agr +
       occ_ind +
-      occ_ser,
+      occ_ser +
+      I(log(pop)),
     effect = "individual",
     method = "within",
     data = pdf
@@ -95,7 +96,7 @@ standard_errors <- map(all_models, \(x) {
   tryCatch(
     {
       r <- vcovDC(x, "HC3")
-      tidy(coeftest(x, vcov. = r, save = TRUE))
+      coeftest(x, vcov. = r, save = TRUE)
     },
     error = \(e) {
       print(e)
