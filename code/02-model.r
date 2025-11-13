@@ -93,5 +93,15 @@ walk2(all_models, names(all_models), \(x, y) {
   ggsave(paste0("plots/", y, "_time_resid_plot.png"))
 })
 
-## Extracting Standard Errors Use vcovDC, and choose between HC1 and HC3, likely 3.
-## Calculating
+## Heteroskedastic and clearly clustered
+
+## Extracting Standard Errors Use vcovDC, and choose between HC1
+standard_errors <- map(all_models, \(x) {
+  tryCatch(
+    {
+      summary(x, vcovDC(x, "HC1"))
+    },
+    error = \(e) NA
+  )
+})
+write_rds(standard_errors, "models/model_summaries.rds")
