@@ -84,14 +84,14 @@ gdp_pc_models <- list(
 
 all_models <- c(gdp_models, gdp_pc_models)
 
-
+write_rds(all_models, "models/full_models.rds")
 ## Heteroskedastic and clearly clustered
 
 ## Extracting Standard Errors Use vcovDC, and choose between HC1
 standard_errors <- map(all_models, \(x) {
   tryCatch(
     {
-      r <- vcovDC(x, "HC1")
+      r <- vcovDC(x, "sss")
       coeftest(x, vcov. = r)
     },
     error = \(e) {
@@ -101,4 +101,3 @@ standard_errors <- map(all_models, \(x) {
   )
 })
 write_rds(standard_errors, "models/model_se.rds")
-write_rds(all_models, "models/full_models.rds")
