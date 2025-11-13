@@ -14,9 +14,9 @@ names(se) <- NULL
 # Replacing each coefficient with the vector from `se`
 
 fe_row <- tribble(
-  ~term                  , ~simple         , ~fixed          , ~fixed_full     , ~simple_pc      , ~fixed_pc       , ~fixed_full_pc  ,
-  "Region Fixed Effects" , ""              , "$\\checkmark$" , "$\\checkmark$" , ""              , "$\\checkmark$" , "$\\checkmark$" ,
-  "Time Fixed Effects"   , "$\\checkmark$" , ""              , ""              , "$\\checkmark$" , ""              , ""
+  ~term                  , ~simple  , ~fixed   , ~fixed_full , ~simple_pc , ~fixed_pc , ~fixed_full_pc ,
+  "Region Fixed Effects" , ""       , "\u2713" , "\u2713"    , ""         , "\u2713"  , "\u2713"       ,
+  "Time Fixed Effects"   , "\u2713" , ""       , ""          , "\u2713"   , ""        , ""
 )
 
 model_table <- modelsummary(
@@ -68,16 +68,25 @@ df2 <- df |>
     ),
     .groups = "drop"
   ) |>
-  mutate(regions = str_to_title(regions)) |>
+  mutate(regions = str_to_title(regions), gdp = gdp / 1e6, pop = pop / 1e6) |>
   rename(
     Region = regions,
-    GDP = gdp,
-    `GDP Per Capita` = gdp_pc,
+    `GDP (Millions, PPS 1985)` = gdp,
+    `GDP Per Capita (PPS 1985)` = gdp_pc,
     `Agricultural (%)` = occ_agr,
     `Industrial (%)` = occ_ind,
     `Service (%)` = occ_ser,
-    Population = pop
+    `Population (Millions)` = pop
   )
 
-kable(df2, format = "html") |>
+kable(
+  df2,
+  format = "html",
+  table.attr = 'class="table table-striped table-hover"'
+) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+    full_width = FALSE,
+    position = "center"
+  ) %>%
   save_kable("tables/summary.png")
