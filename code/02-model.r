@@ -2,6 +2,7 @@ library(here)
 library(lmtest)
 library(plm)
 library(tidyverse)
+library(broom)
 
 options(scipen = 999)
 df <- read_rds(here("data/it_de_regional_data_cleaned.rds"))
@@ -93,8 +94,8 @@ write_rds(all_models, "models/full_models.rds")
 standard_errors <- map(all_models, \(x) {
   tryCatch(
     {
-      r <- vcovDC(x, "HC1")
-      coeftest(x, vcov. = r, save = TRUE)
+      r <- vcovDC(x, "HC3")
+      tidy(coeftest(x, vcov. = r, save = TRUE))
     },
     error = \(e) {
       print(e)
