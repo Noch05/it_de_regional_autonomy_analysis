@@ -30,53 +30,56 @@ pdf <- df |>
 # The index variables in the effects do not need to be in the formula
 # GDP Models
 gdp_models <- list(
-  simple = plm(I(log(gdp)) ~ gov_type, model = "pooling", data = pdf),
-  fixed = plm(
-    I(log(gdp)) ~ gov_type +
-      year +
-      I(log(pop)) +
-      I(log(occ_ind)) +
-      I(log(occ_agr)) +
-      I(log(occ_ser)),
-    effect = "individual",
-    model = "random",
+  simple = plm(
+    I(log(gdp)) ~ gov_type,
+    model = "within",
+    effect = "time",
     data = pdf
   ),
-  growth = plm(
-    I(log(gdp)) ~ gov_type +
-      years_since +
-      years_since * gov_type,
+  fixed = plm(
+    I(log(gdp)) ~ years_since + gov_type:years_since,
     effect = "individual",
-    model = "random",
+    model = "within",
+    data = pdf
+  ),
+  fixed_full = plm(
+    I(log(gdp)) ~ years_since +
+      gov_type:years_since +
+      occ_agr +
+      occ_ind +
+      occ_ser,
+    effect = "individual",
+    method = "within",
     data = pdf
   )
 )
 
 # GDP Per Capita Models
 gdp_pc_models <- list(
-  simple_pc = plm(I(log(gdp_pc)) ~ gov_type, model = "pooling", data = pdf),
-  nominal_fixed_pc = plm(
-    gdp_pc ~ gov_type + year + occ_ind + occ_agr + occ_ser,
-    effect = "individual",
-    model = "random",
+  simple_pc = plm(
+    I(log(gdp_pc)) ~ gov_type,
+    model = "within",
+    effect = "time",
     data = pdf
   ),
-  growth_pc = plm(
-    I(log(gdp_pc)) ~ gov_type +
-      years_since +
-      years_since * gov_type,
+  fixed_pc = plm(
+    I(log(gdp_pc)) ~ years_since + gov_type:years_since,
     effect = "individual",
-    model = "random",
+    model = "within",
     data = pdf
   ),
-  nominal_growth_pc = plm(
-    gdp_pc ~ gov_type + years_since + years_since * gov_type,
+  fixed_full_pc = plm(
+    I(log(gdp_pc)) ~ years_since +
+      gov_type:years_since +
+      occ_agr +
+      occ_ind +
+      occ_ser,
     effect = "individual",
-    model = "random",
+    method = "within",
     data = pdf
   )
 )
-# Growth Models drop sectoral controls, the change in sectoral composition
+# 1st Growth Model drop sectoral controls, the change in sectoral composition
 # may be apart of the benefit to regional autonomy, via economic policy, plans etc.
 #---------------------------------------------
 
@@ -85,14 +88,13 @@ gdp_pc_models <- list(
 all_models <- c(gdp_models, gdp_pc_models)
 
 write_rds(all_models, "models/full_models.rds")
-## Heteroskedastic and clearly clustered
 
 ## Extracting Standard Errors Use vcovDC, and choose between HC1
 standard_errors <- map(all_models, \(x) {
   tryCatch(
     {
-      r <- vcovDC(x, "sss")
-      coeftest(x, vcov. = r)
+      r <- vcovDC(x, "HC1")
+      coeftest(x, vcov. = r, save = TRUE)
     },
     error = \(e) {
       print(e)
