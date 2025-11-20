@@ -1,5 +1,4 @@
 library(here)
-library(lmtest)
 library(fixest)
 library(tidyverse)
 
@@ -56,3 +55,31 @@ write_rds(models, "models/full_models.rds")
 # 1st Growth Model drop sectoral controls, the change in sectoral composition
 # may be apart of the benefit to regional autonomy, via economic policy, plans etc.
 #---------------------------------------------
+# Making Regression Table
+model_table <- etable(
+  models,
+  digits = 5,
+  se.below = TRUE,
+  dict = c(
+    `I(log(gdp))` = "log(GDP)",
+    `I(log(gdp_pc))` = "log(GDP Per Capita)",
+    `gov_typespecialstatute` = "Special Statute Region",
+    `gov_typefederal` = "Federal Länder",
+    `years_since` = "Years Since 1977",
+    `occ_agr` = "Agricultural (%)",
+    `occ_ind` = "Industrial (%)",
+    `occ_ser` = "Service (%)",
+    `year` = "Year",
+    `regions` = "Region/Länder"
+  ),
+  headers = list("GDP Models" = 3, "GDP Per Capita Models" = 3),
+  tex = TRUE,
+  export = "tables/model_table.png",
+  signif.code = c("*" = 0.05),
+  notes = c(
+    "* p\\textless0.05",
+    "Standard errors in parentheses",
+    "Clustered by time and region"
+  ),
+  style.tex = style.tex(main = "aer")
+)

@@ -7,13 +7,14 @@ df <- read_rds(here("data/it_de_regional_data_cleaned.rds")) |>
   mutate(
     country = if_else(federal == 1, "German", "Italian"),
     gdp_divide = gdp / 1e9
-  )
+  ) |>
+  arrange(regions)
 #-------------------------------------------
 # Graphing GDP over time per region
 df |>
   ggplot(aes(x = year_num, y = gdp_divide, color = regions, shape = country)) +
   geom_jitter(size = 2, alpha = 0.8, width = 0.3, height = 0) +
-  scale_color_discrete(labels = unique(str_to_title(df$regions))) +
+  scale_color_discrete(labels = sort(unique(str_to_title(df$regions)))) +
   labs(
     x = "Year",
     y = "GDP (Billions, PPS, 1985 Prices)",
@@ -35,7 +36,7 @@ ggsave(here("plots/gdp_plot.png"))
 df |>
   ggplot(aes(x = year_num, y = gdp_pc, color = regions, shape = country)) +
   geom_jitter(size = 2, alpha = 0.8, width = 0.3, height = 0) +
-  scale_color_discrete(labels = unique(str_to_title(df$regions))) +
+  scale_color_discrete(labels = sort(unique(str_to_title(df$regions)))) +
   labs(
     x = "Year",
     y = "GDP Per Capita ( PPS, 1985 Prices)",
