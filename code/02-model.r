@@ -2,6 +2,7 @@ library(here)
 library(fixest)
 library(tidyverse)
 library(tinytex)
+library(magick)
 
 
 options(scipen = 999)
@@ -134,7 +135,7 @@ files <- list(
 )
 
 walk2(etables, files, \(tex, file) {
-  packages <- c("booktabs", "dcolumn", "siunitx") |>
+  packages <- c("booktabs", "dcolumn", "siunitx", "amssymb") |>
     map_chr(\(x) paste0("\\usepackage{", x, "}"))
 
   completed <- c(
@@ -154,6 +155,7 @@ walk2(etables, files, \(tex, file) {
     engine = "pdflatex",
     pdf_file = pdf
   )
+
   image_read_pdf(pdf, density = 300) |>
     image_write(png)
 })
