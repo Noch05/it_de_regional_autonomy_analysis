@@ -1,8 +1,8 @@
 library(here)
 library(tidyverse)
-library(broom)
 library(stargazer)
 library(tinytex)
+library(magick)
 
 dfs <- read_rds(here("data/it_de_regional_data_cleaned.rds")) |>
   group_split(regions)
@@ -10,9 +10,9 @@ dfs <- read_rds(here("data/it_de_regional_data_cleaned.rds")) |>
 walk(dfs, \(x) {
   name <- str_to_title(unique(x$regions))
   x <- x |>
-    mutate(gdp = gdp / 1e6, pop = pop / 1e3) |>
+    mutate(gdp = gdp / 1e6, pop = pop / 1e6) |>
     select(
-      `Population (Thousands)` = pop,
+      `Population (Millions)` = pop,
       `GDP (Millions)` = gdp,
       `GDP Per Capita` = gdp_pc,
       "Agriculture (%)" = occ_agr,
@@ -29,6 +29,37 @@ walk(dfs, \(x) {
     style = "aer",
     out.header = FALSE,
     out = here(paste0("tex/summary_table_", name, ".tex")),
-    float = FALSE
+    float = FALSE,
+    digits = 2
   )
+})
+
+tex_files <- list.files(
+  here("tex"),
+  full.names = TRUE
+)
+
+walk(tex_files, \(x) {
+  tex <- read_lines(x)
+  packages <- c("booktabs", "dcolumn", "siunitx") |>
+    map_chr(\(x) paste0("\\usepackage{", x, "}"))
+
+  completed <- c(
+    "\\documentclass{article}",
+    packages,
+    "\\begin{document}",
+    tex,
+    "\\end{document}"
+  )
+  write_lines(completed, x, append = FALSE)
+  pdf <- str_replace_all(x, "tex", "pdf")
+  png <- str_replace(x, "\\.tex", "\\.png") |>
+    str_replace("tex", "tables")
+  latexmk(
+    x,
+    engine = "pdflatex",
+    pdf_file = pdf
+  )
+  image_read_pdf(pdf, density = 300) |>
+    image_write(png)
 })
