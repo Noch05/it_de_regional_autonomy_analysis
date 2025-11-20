@@ -42,7 +42,7 @@ tex_files <- list.files(
 walk(tex_files, \(x) {
   tex <- read_lines(x)
   packages <- c("booktabs", "dcolumn", "siunitx") |>
-    map_chr(\(x) paste0("\\usepackage{", x, "}"))
+    map_chr(\(z) paste0("\\usepackage{", z, "}"))
 
   completed <- c(
     "\\documentclass{article}",
