@@ -36,6 +36,7 @@ walk(dfs, \(x) {
 
 tex_files <- list.files(
   here("tex"),
+  pattern = "^summary_table",
   full.names = TRUE
 )
 
