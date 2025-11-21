@@ -135,14 +135,16 @@ files <- list(
 )
 
 walk2(etables, files, \(tex, file) {
-  packages <- c("booktabs", "dcolumn", "siunitx", "amssymb") |>
+  packages <- c("booktabs", "dcolumn", "siunitx", "amssymb", "pdflscape") |>
     map_chr(\(x) paste0("\\usepackage{", x, "}"))
 
   completed <- c(
     "\\documentclass{article}",
     packages,
     "\\begin{document}",
+    "\\begin{landscape}",
     tex,
+    "\\end{landscape}",
     "\\end{document}"
   )
   write_lines(completed, file, append = FALSE)
