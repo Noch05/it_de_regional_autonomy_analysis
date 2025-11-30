@@ -33,7 +33,7 @@ subset_data <- pmap(
 )
 rm(all_data)
 
-# Checking for NA's and stopping in case
+# Checking for NA's,
 NA_vals <- map_dbl(
   subset_data,
   ~ {
@@ -56,24 +56,22 @@ subset_data <- map2(subset_data, names(subset_data), \(x, y) {
 df <- reduce(
   subset_data,
   full_join,
-  by = c("NUTS", "CODE", "REGIONS", "YEAR", "YEAR_num")
+  by = c(
+    "NUTS", # EU Regional Nomenclature
+    "CODE", #Additional Code for Each Region
+    "REGIONS", # Region Name
+    "YEAR", # Year as a string
+    "YEAR_num" # Year as a number)
+  )
 )
+
+
 names(df) <- str_replace_all(names(df), "\\s", "_") |> tolower()
-
-
-# nuts is EU NUTS code
-# code is the code used in the dataset for each region
-# region is the name of the region/lander
-# year is the year as a string
-# year_num is the val as a double
-# All the other variables are detailed above
-
 #-------------------------------------------------
 # Adding and Modifying Variables
 
-# Keeping Italian NUTS1 Regions Nord-est and Nord-Ovest
-# and most comparable german regions by economics and proximity
-
+# Keeping Italian regions Nord-Est and Nord-Ovest
+# Keeping Most comparable german regions by economic similarity and regional proximity
 italy_keep <- c(
   "piemonte",
   "valle d'aosta",
@@ -91,10 +89,7 @@ germany_keep <- c(
   "nordrhein-westfalen"
 )
 
-# Reverting the Scaling, populations were dived by 1000, gdp by 1000000
-# Occ variables no as percentages
-# Creating New Variables to capture government type
-
+# Rescaling and creating new variables
 df <- df |>
   mutate(
     across(c(pop, occ_agr, occ_ind, occ_ser, occ_tot), \(x) x * 1e4),
@@ -121,6 +116,6 @@ df <- df |>
     federal = if_else(gov_type == "federal", 1, 0)
   )
 
-
+# Writing cleaned data
 write_rds(df, here("data/it_de_regional_data_cleaned.rds"))
 write_csv(df, here("data/it_de_regional_data_cleaned.csv"))

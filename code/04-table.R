@@ -4,9 +4,11 @@ library(stargazer)
 library(tinytex)
 library(magick)
 
+# Reading Data
 dfs <- read_rds(here("data/it_de_regional_data_cleaned.rds")) |>
   group_split(regions)
 
+# Fixing capitalization and naming, saving LaTeX table
 walk(dfs, \(x) {
   name <- str_to_title(unique(x$regions))
   x <- x |>
@@ -39,6 +41,8 @@ tex_files <- list.files(
   pattern = "^summary_table",
   full.names = TRUE
 )
+
+# Rendering LaTeX and saving as .PNG
 
 walk(tex_files, \(x) {
   tex <- read_lines(x)

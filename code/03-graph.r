@@ -54,33 +54,3 @@ df |>
     panel.grid.minor = element_blank()
   )
 ggsave(here("plots/gdp_pc_plot.png"))
-
-## Determining Residual Structures
-
-all_models <- read_rds("models/full_models.rds")
-
-residual_plots <- map(all_models, \(x) {
-  df <- df |>
-    mutate(fitted = predict(x, df), residuals = eval(x$fml[[2]]) - fitted)
-
-  list(
-    ggplot(df, aes(x = fitted, y = residuals)) +
-      geom_point() +
-      geom_hline(yintercept = 0, color = "blue", linetype = 2) +
-      theme_minimal() +
-      labs(title = "fitted"),
-
-    ggplot(df, aes(x = year_num, y = residuals)) +
-      geom_point() +
-      theme_minimal() +
-      labs(title = "time")
-  )
-}) |>
-  unlist()
-
-ggsave(
-  filename = "plots/residual_plots.pdf",
-  plot = marrangeGrob(residual_plots, nrow = 3, ncol = 3),
-  width = 16,
-  height = 9
-)

@@ -9,6 +9,7 @@ options(scipen = 999)
 df <- read_rds(here("data/it_de_regional_data_cleaned.rds"))
 
 #-------------------------------------------
+# Defining Standard Error Clustering
 twoway <- function(x) {
   return(
     vcov_cluster(
@@ -18,6 +19,12 @@ twoway <- function(x) {
     )
   )
 }
+# 6 Models totel, 3 for GDP and 3 for GDP per capita
+# Each are the same
+# Model 1 and 4, Simple with Time Fixed Effects
+# Model 2 and 5, Region Fixed Effects, interaction between autonomy and time
+# Model 3 and 6: Same as 2 and 5, but with economic sectoral covariates
+
 models <- list(
   feols(I(log(gdp)) ~ gov_type | year, data = df),
   feols(I(log(gdp)) ~ years_since + gov_type:years_since | regions, data = df),
@@ -54,8 +61,6 @@ models <- list(
   })
 write_rds(models, "models/full_models.rds")
 
-# 1st Growth Model drop sectoral controls, the change in sectoral composition
-# may be apart of the benefit to regional autonomy, via economic policy, plans etc.
 #---------------------------------------------
 
 # Making Regression Table
