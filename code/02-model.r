@@ -76,8 +76,7 @@ create_etable <- function(dict, group = NULL, digits) {
     signif.code = c("*" = 0.05),
     notes = c(
       "1",
-      "2",
-      "3"
+      "2"
     ),
     group = group,
     style.tex = style.tex(main = "aer"),
@@ -96,9 +95,8 @@ dicts <- list(
     `years_since` = "Years Since 1977",
     `year` = "Year",
     `regions` = "Region/Länder",
-    "1" = "*p \\textless 0.05*",
-    "2" = "*Standard errors (SE) in parentheses*",
-    "3" = "*SE clustered by **time** and **region** *"
+    "1" = "* \\*p \\textless 0.05*",
+    "2" = "*Standard errors clustered by **time** and **region** in parentheses*"
   ),
   dict2 = c(
     `I(log(gdp))` = "log(GDP)",
@@ -108,9 +106,8 @@ dicts <- list(
     `years_since` = "Years Since 1977",
     `year` = "Year",
     `regions` = "Region/Länder",
-    "1" = "*p \\textless 0.05*",
-    "2" = "*Standard errors (SE) in parentheses*",
-    "3" = "*SE clustered by **time** and **region** *",
+    "1" = "* \\*p \\textless 0.05*",
+    "2" = "*Standard errors clustered by **time** and **region** in parentheses*",
     occ_agr = "Agricultural (%)",
     occ_ind = "Industrial (%)",
     occ_ser = "Services (%)"

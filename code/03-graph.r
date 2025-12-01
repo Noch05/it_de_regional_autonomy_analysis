@@ -1,6 +1,5 @@
 library(tidyverse)
 library(here)
-library(gridExtra)
 library(fixest)
 
 df <- read_rds(here("data/it_de_regional_data_cleaned.rds")) |>
