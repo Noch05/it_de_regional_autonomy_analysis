@@ -10,7 +10,7 @@ Germany, by contrast, is a federal republic; each of its federal Länder has a s
 ## Methods, Models, and Results
 Using data from the Regio-EU 1977-1996 dataset (available in the `data` directory), I trained several panel effects models to estimate the impact of autonomy on economic growth. There are 6 models in total, 3 using $\log(\text{GDP})$ as the dependent variable, and 3 using $\log(\text{GDP per Capita})$ as proxies for economic output and standard of living, respectively.
 
-* Model 1 is a simple model containing only the level of autonomy and time fixed effects ($\lambda_t$).
+* Model 1 is a simple model containing only the level of autonomy and time fixed effects($\lambda_t$).
 ```math
 \log(y_{it}) = \beta_1(\text{GovType}_i) + \lambda_t + \epsilon_it
 ```
@@ -18,7 +18,7 @@ Using data from the Regio-EU 1977-1996 dataset (available in the `data` director
 ```math
 \log(y_{it}) = \beta_1 \, \text{Year}_t + \beta_2 \left( \text{Year}_t \times \text{GovType}_i \right) + \alpha_i + \epsilon_{it}
 ```
-* Model 3 is an expanded version of model 2 with additional covariates ($\mathbf{X}_{it}$) describing economic sectoral competition of the regions, which changes over time.
+* Model 3 is an expanded version of model 2 with additional covariates ($\mathbf{X}_{it}$) describing sectoral composition the regional economies, which changes over time.
 ```math
 \log(y_{it}) = \beta_1 \, \text{Year}_t + \beta_2 \left( \text{Year}_t \times \text{GovType}_i \right) + \boldsymbol{\gamma} \mathbf{X}_{it} + \alpha_i + \epsilon_{it}
 ```
