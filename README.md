@@ -1,14 +1,38 @@
 # Regional Autonomy and Economic Growth: Comparing German and Italian Sub-National Systems
- 
+ 
 ## Overview
+This work attempts to determine how sub-national autonomy impacts economic growth within sub-national units. Across the two country case-studies, Italy and Germany, there are three distinct dimensions of analysis. 
+
+Firstly, Italy's unique historical circumstances have created an asymmetric regionalist state, providing two dimensions of analysis. The Italian peninsula has traditionally been fragmented, resulting in strong regional identities, which were subsequently worked into the framework of the unitary Italian Republic. Italy has 15 ordinary regions, which at their inception did not have defined powers. Over time, they have gained more administrative responsibilities, while expanding their fiscal powers has lagged, resulting in a high degree of reliance on the central state. The other 5 regions are special-statute regions that have both significant administrative and fiscal powers compared to the ordinary regions. However, both types are firmly subordinated to the central state under the unitary structure.
+
+Secondly, Germany is a federal republic; each of its federal Länder has a significant degree of autonomy that is symmetric across the federation, indicating each Länder has the same powers, responsibilities, and level of sovereignty. 
+
+This comparison of autonomy within a unitary and federal state will provide important insight into the degree to which autonomy is beneficial for growth, and how the context in which it is exercised plays a role in determining its benefits. 
 
 ## Methods, Models, and Results
+Using data from the Regio-EU 1977-1996 dataset (available in the `data` directory), I trained several panel effects models to estimate the impact of autonomy on economic growth. There are 6 models in total, 3 using $\log(\text{GDP})$ as the dependent variable, and 3 using $\log(\text{GDP per Capita})$ as proxies for economic output and standard of living, respectively.
+
+* Model 1 is a simple model containing only the level of autonomy and time fixed effects ($\lambda_t$)
+\begin{equation}
+\log(y_{it}) = \beta_1(\text{GovType}_i) + \lambda_t + \epsilon_it
+\end{equation}
+* Model 2 features regional fixed effects ($\alpha_i$), and the interaction between time (normalized to years after 1977) and autonomy level
+\begin{equation}
+\log(y_{it}) = \beta_1 \, \text{Year}_t + \beta_2 \left( \text{Year}_t \times \text{GovType}_i \right) + \alpha_i + \epsilon_{it}
+\end{equation}
+* Model 3 is an expanded version of model 2 with additional covariates ($\mathbf{X}_{it}$) describing economic sectoral competition of the regions, which changes over time.
+\begin{equation}
+\log(y_{it}) = \beta_1 \, \text{Year}_t + \beta_2 \left( \text{Year}_t \times \text{GovType}_i \right) + \boldsymbol{\gamma} \mathbf{X}_{it} + \alpha_i + \epsilon_{it}
+\end{equation}
+
+All the standard errors for these models are clustered by time and region to match the correlation structure of the residuals, and statistical significance was gauged using $\alpha =0.05$ for all coefficients. The full table is available in the `tables` directory. 
+
+Ultimately, while both the special-statute regions and the federal Länder are associated with higher rates of GDP and GDP per capita growth as compared to the ordinary regions, only the coefficients for the special-statute regions are consistently significant. This suggests that the return to autonomy can be highly dependent on the institutional contexts in which it is exercised. The Italian special-statute regions benefit more conclusively because they remain embedded within the unitary framework, benefiting from the active central state in the same way as ordinary regions, while federal Länder have more responsibilities and less support from their central state, offsetting the benefits of their autonomy. 
 
 ## Replication
 
-All of the data required to replicate the analysis is available within the repo, along with intermediary files at each step. The code folder contains 4 `R` scripts each labelled with a number, simply run each of those files in succession and it will re-generate the output files in the repo. 
+All of the data required to replicate the analysis is available within the repo, along with intermediary files at each step. The code folder contains 4 `R` scripts, each labelled with a number. Simply run each of those files in succession, and it will re-generate the output files in the repo. 
 
-Simply ensure that all of the appropriate R-packages and other pre-requisites are installed. The packages required are `{here}`, `{tidyverse}`, `{fixest}`, `{stargazer}`, `{magick}`, `{tinytex}`, and a proper LaTeX distribution, with the `{booktabs}`, `{dcolumn}`, `{siunitx}`, `{assymb}`, `{pdflscape}` packages installed. As far as the LaTeX generation, I highly recommend installing the TinyTeX distribution using `{tinytex}` in `R`, and then it will download the necessary LaTeX packages when rendering if necessary. Also keep in mind that doing this will create intermediate directories for the `.pdf` and `.tex` intermidate outputs as well. 
+Simply ensure that all of the appropriate R-packages and other prerequisites are installed. The packages required are `{here}`, `{tidyverse}`, `{fixest}`, `{stargazer}`, `{magick}`, `{tinytex}`, and a proper LaTeX distribution, with the `{booktabs}`, `{dcolumn}`, `{siunitx}`, `{amssymb}`, `{pdflscape}` packages installed. As far as the LaTeX generation, I highly recommend installing the TinyTeX distribution using `{tinytex}` in `R`, and then it will download the necessary LaTeX packages when rendering. Also keep in mind that doing this will create intermediate directories for the `.pdf` and `.tex` intermediate outputs as well. 
 
 However, the outputs are also readily available within the repo. The cleaned data is available in `.rds` and `.csv` format, the models are also available in `.rds` format, and all the plots and tables are available in `.png` format already. 
-
