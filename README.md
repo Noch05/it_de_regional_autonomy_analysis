@@ -18,7 +18,7 @@ Using data from the Regio-EU 1977-1996 dataset (available in the `data` director
 ```math
 \log(y_{it}) = \beta_1 \, \text{Year}_t + \beta_2 \left( \text{Year}_t \times \text{GovType}_i \right) + \alpha_i + \epsilon_{it}
 ```
-* Model 3 is an expanded version of model 2 with additional covariates ($\mathbf{X}_{it}$) describing the sectoral composition the regional economies, which changes over time.
+* Model 3 is an expanded version of model 2 containing additional covariates ($\mathbf{X}_{it}$) describing the sectoral composition of regional economies. These compositions change over time, so aren't fully captured by the regional fixed effects.
 ```math
 \log(y_{it}) = \beta_1 \, \text{Year}_t + \beta_2 \left( \text{Year}_t \times \text{GovType}_i \right) + \boldsymbol{\gamma} \mathbf{X}_{it} + \alpha_i + \epsilon_{it}
 ```
