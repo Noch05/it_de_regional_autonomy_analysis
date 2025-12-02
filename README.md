@@ -29,8 +29,13 @@ Ultimately, while both the special-statute regions and the federal Länder are a
 
 ## Replication
 
-All of the data required to replicate the analysis is available within the repo, along with intermediary files at each step. The code folder contains 4 `R` scripts, each labelled with a number. Simply run each of those files in succession, and it will re-generate the output files in the repo. 
+All of the data required to replicate the analysis is available within the repo, along with intermediary files at each step. The code folder contains 4 `.r` files, each labelled with a  number, from `01` to `04`, that executes a portion of the analysis:
 
-Simply ensure that all of the appropriate R-packages and other prerequisites are installed. The packages required are `{here}`, `{tidyverse}`, `{fixest}`, `{stargazer}`, `{magick}`, `{tinytex}`, and a proper LaTeX distribution, with the `{booktabs}`, `{dcolumn}`, `{siunitx}`, `{amssymb}`, `{pdflscape}` packages installed. As far as the LaTeX generation, I highly recommend installing the TinyTeX distribution using `{tinytex}` in `R`, and then it will download the necessary LaTeX packages when rendering. Also keep in mind that doing this will create intermediate directories for the `.pdf` and `.tex` intermediate outputs as well. 
+* `01-data_clean.r`: Takes the original data, subsets to the regions and variables of interest, then writes the cleaned data in `.rds` and `.csv` format.
+* `02-model.r`: Runs the panel fixed effects models, saves the model objects in `.rds` format, and the regression table in `.tex`, `.pdf`, and `.png` format. The `.tex` is the raw LaTeX, while the `.pdf`, and `.png` are rendered. 
+* `03-graph.r`: Creates graphs of GDP and GDP per capita over time, using different colors for each region, and saving them as `.png` files.
+* `04-table.r`: Creates the summary statistic tables for each region, and saves them as `.tex`, `.pdf`, and `.png` files. The `.tex` is the raw LaTeX, while the `.pdf`, and `.png` are rendered. 
 
-However, the outputs are also readily available within the repo. The cleaned data is available in `.rds` and `.csv` format, the models are also available in `.rds` format, and all the plots and tables are available in `.png` format already. 
+To replicate the analysis, I reccomend that each file be run sequentially, though strictly, once file `01` has run the others can be executed in any order. Simply ensure that all of the appropriate R-packages and other prerequisites are installed. The packages required are `{here}`, `{tidyverse}`, `{fixest}`, `{stargazer}`, `{magick}`, `{tinytex}`, and a proper LaTeX distribution, with the `{booktabs}`, `{dcolumn}`, `{siunitx}`, `{amssymb}`, `{pdflscape}` packages installed. As far as the LaTeX generation, I highly recommend installing the TinyTeX distribution using `{tinytex}` in `R`, and then it will download any necessary LaTeX packages when rendering. Also keep in mind that doing this will create intermediate directories for the `.pdf` and `.tex` intermediate outputs as well. 
+
+However, the outputs are also already available within the repo. The cleaned data is available in `.rds` and `.csv` format, the models are available in `.rds` format, and all the plots and tables are available in `.png` format for your viewing.
