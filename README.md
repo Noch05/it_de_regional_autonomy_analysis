@@ -2,7 +2,9 @@
 
 ## *IMPORTANT METHODOLOGICAL NOTE*: 
 
-The regression analysis below, and in the paper, uses two-way clustering of the standard errors, by time and by region. This was plausible given the presence of serial correlation within each region and potential cross-sectional correlation at each year due to global and regional economic shocks. However, the number of clusters makes this approach infeasible. With only 12 regions over 17 years, the number of clusters is not large enough for the asymptotic guarantee of the standard errors to hold, likely biasing the standard errors downward. Instead, one-way clustering over region should have been performed, due to the serial correlation within each unit over time being more prevalent than correlation across units in a single period, with estimates coming from a more conservative CR2 adjustment or, even better, a wild cluster bootstrap for valid standard errors with such a small number of clusters. 
+The regression analysis below, and in the paper, uses two-way clustering of the standard errors, by time and by region. This was plausible given the presence of serial correlation within each region and potential cross-sectional correlation at each year due to global and regional economic shocks. However, the number of clusters makes this approach infeasible. With only 12 regions over 17 years, the number of clusters is not large enough for the asymptotic guarantee of the standard errors to hold, likely biasing the standard errors downward. Instead, one-way clustering over region should have been performed, due to the serial correlation within each unit over time being more prevalent than correlation across units in a single period, with estimates coming from a more conservative CR2 adjustment or, even better, a wild cluster bootstrap for valid standard errors with such a small number of clusters.
+
+In the future, I may update the project for this inferential approach, but it is a small and relatively unimportant part of my research focus, so this clarification/note should suffice. 
 
  
 ## Overview
