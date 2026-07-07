@@ -1,4 +1,9 @@
 # Regional Autonomy and Economic Growth: Comparing German and Italian Sub-National Systems
+
+## *IMPORTANT METHODOLOGICAL NOTE*: 
+
+The regression analysis below, and in the paper, uses two-way clustering of the standard errors, by time and by region. This was plausible given the presence of serial correlation within each region and potential cross-sectional correlation at each year due to global and regional economic shocks. However, the number of clusters makes this approach infeasible. With only 12 regions over 17 years, the number of clusters is not large enough for the asymptotic guarantee of the standard errors to hold, likely biasing the standard errors downward. Instead, one-way clustering over region should have been performed, due to the serial correlation within each unit over time being more prevalent than correlation across units in a single period, with estimates coming from a more conservative CR2 adjustment or, even better, a wild cluster bootstrap for valid standard errors with such a small number of clusters. 
+
  
 ## Overview
 This work attempts to determine how sub-national autonomy impacts economic growth within sub-national units, utilizing the case studies of Germany and Italy. These case studies provide three distinct dimensions of analysis, highlighting the impact of autonomy across different types of states.
@@ -29,13 +34,13 @@ Ultimately, while both the special-statute regions and the federal Länder are a
 
 ## Replication
 
-All of the data required to replicate the analysis is available within the repo, along with intermediary files at each step. The code folder contains 4 `.r` files, each labelled with a  number, from `01` to `04`, that executes a portion of the analysis:
+All of the data required to replicate the analysis is available within the repo, along with intermediary files at each step. The code folder contains 4 `.r` files, each labelled with a  number, from `01` to `04`, that execute a portion of the analysis:
 
 * `01-data_clean.r`: Takes the original data, subsets to the regions and variables of interest, then writes the cleaned data in `.rds` and `.csv` format.
 * `02-model.r`: Runs the panel fixed effects models, saves the model objects in `.rds` format, and the regression table in `.tex`, `.pdf`, and `.png` format. The `.tex` is the raw LaTeX, while the `.pdf`, and `.png` are rendered. 
 * `03-graph.r`: Creates graphs of GDP and GDP per capita over time, using different colors for each region, and saving them as `.png` files.
 * `04-table.r`: Creates the summary statistic tables for each region, and saves them as `.tex`, `.pdf`, and `.png` files. The `.tex` is the raw LaTeX, while the `.pdf`, and `.png` are rendered. 
 
-To replicate the analysis, I reccomend that each file be run sequentially, though strictly, once file `01` has run the others can be executed in any order. Simply ensure that all of the appropriate R-packages and other prerequisites are installed. The packages required are `{here}`, `{tidyverse}`, `{fixest}`, `{stargazer}`, `{magick}`, `{tinytex}`, and a proper LaTeX distribution, with the `{booktabs}`, `{dcolumn}`, `{siunitx}`, `{amssymb}`, `{pdflscape}` packages installed. As far as the LaTeX generation, I highly recommend installing the TinyTeX distribution using `{tinytex}` in `R`, and then it will download any necessary LaTeX packages when rendering. Also keep in mind that doing this will create intermediate directories for the `.pdf` and `.tex` intermediate outputs as well. 
+To replicate the analysis, I recommend that each file be run sequentially, though strictly; once file `01` has run, the others can be executed in any order. Simply ensure that all of the appropriate R packages and other prerequisites are installed. The packages required are `{here}`, `{tidyverse}`, `{fixest}`, `{stargazer}`, `{magick}`, `{tinytex}`, and a proper LaTeX distribution, with the `{booktabs}`, `{dcolumn}`, `{siunitx}`, `{amssymb}`, `{pdflscape}` packages installed. As far as the LaTeX generation, I highly recommend installing the TinyTeX distribution using `{tinytex}` in `R`, and then it will download any necessary LaTeX packages when rendering. Also keep in mind that doing this will create intermediate directories for the `.pdf` and `.tex` intermediate outputs as well. 
 
 However, the outputs are also already available within the repo. The cleaned data is available in `.rds` and `.csv` format, the models are available in `.rds` format, and all the plots and tables are available in `.png` format for your viewing.
